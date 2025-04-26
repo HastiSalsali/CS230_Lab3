@@ -12,7 +12,7 @@ using namespace std;
 const int BitsInMem = 32768 , BitsInCache = 2048 , CacheLineSize = 16, LinesInCache = 2048 / (2 * 16);
 struct CacheSlots {
     int val[4] = {};
-    int tag;
+    int tag = -1;
     bool dirtyBit = 0;
     bool validBit = 0;
 };
@@ -57,16 +57,14 @@ int GetWay (CacheSlots cache[][2], int address){
 };
 
 void WriteToCache (CacheSlots cache[][2], int memory[], int address, int val){
-    int way = GetWay(cache, address), line = GetLine(address), tag = GetTag(address), offset = address % 16;
+    int way = GetWay(cache, address), line = GetLine(address), tag = GetTag(address), offset = (address % 16) / 4;
     
     if (way == 3){
         way = rand() % 2;
         MemToCache(cache, memory, address, way);
     }
     cache[line][way].val[offset] = val;
-    cache[line][way].tag = tag;
     cache[line][way].dirtyBit = true;
-    cache[line][way].validBit = true;
 };
 
 void CacheToMem (CacheSlots cache[][2], int  memory[],  int line, int way){
@@ -74,7 +72,7 @@ void CacheToMem (CacheSlots cache[][2], int  memory[],  int line, int way){
     address = (cache[line][way].tag << 10) + (line << 4);
     memIndex = address >> 2;
     
-    if (cache[line][way].dirtyBit == true){
+    if (cache[line][way].dirtyBit){
         memory[memIndex] = cache[line][way].val[0];
         memory[memIndex + 1] = cache[line][way].val[1];
         memory[memIndex + 2] = cache[line][way].val[2];
@@ -90,7 +88,7 @@ void MemToCache (CacheSlots cache[][2], int  memory[], int address, int way){
     if (way == 3){
         way = rand() % 2;
     }
-    if (cache[line][way].dirtyBit == true){
+    if (cache[line][way].dirtyBit){
         CacheToMem(cache, memory, line, way);
     }
     cache[line][way].val[0] = memory[memIndex];
@@ -102,4 +100,29 @@ void MemToCache (CacheSlots cache[][2], int  memory[], int address, int way){
     cache[line][way].dirtyBit = false;
     cache[line][way].validBit = true;
     
+}
+
+void print (CacheSlots cache[][2], int memory[], int address){
+    int line = GetLine(address);
+    
+    cout << "Address: " << address << "\n"
+    << "Memory: " << memory[address] << "\n"
+    << "Cache: " << right << "\n"
+    << "\t" << setw(4) << cache[line][0].val[0]
+    << setw(4) << cache[line][0].val[1]
+    << setw(4) << cache[line][0].val[2]
+    << setw(4) << cache[line][0].val[3] << "\n"
+    << "\t" << setw(4) << cache[line][1].val[0]
+    << setw(4) << cache[line][1].val[1]
+    << setw(4) << cache[line][1].val[2]
+    << setw(4) << cache[line][1].val[3] << "\n"
+    << "Valid bits : " << ((cache[line][0].validBit == 0) ? -1 : 0 )<< " " << ((cache[line][1].validBit == 0) ? -1 : 0 ) << "\n"
+    << "Dirty bits: " << cache[line][0].dirtyBit<< " " << cache[line][1].dirtyBit << "\n";
+    //Address: xxxxxxxx
+    //memory:nnnnnnnn
+    //cache:
+    //  mmmm
+    //  mmmm
+    //Valid bits: k k
+    //Dirty bits: k k
 }
