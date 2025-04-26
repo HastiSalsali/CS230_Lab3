@@ -29,6 +29,31 @@ int main () {
     srand(time(0));
     int memory[BitsInMem] = {};
     CacheSlots cache [LinesInCache][2];
+    char typeOfAccess, menuOpt = 'A';
+    bool continueMenu = true;
+    
+    cout << "Salsali, Hasti        CS230 Section 15562 May 5 \nThird Laboratory Assignment – Cache Simulation\n";
+    
+    while (continueMenu){
+        cout << "Enter a command, A or B: ";
+        cin >> menuOpt;
+        if (!cin){
+            cin.clear();
+            menuOpt = 'c';
+        }
+        switch (menuOpt){
+            case 'A':
+            case 'a':
+                break;
+            case 'B':
+            case 'b':
+                break;
+            default:
+                cout << "- Command must be A, a, B, or b\n";
+        }
+        
+    };
+    
     
 }
 //-----------------------------------------------------------------
@@ -125,4 +150,38 @@ void print (CacheSlots cache[][2], int memory[], int address){
     //  mmmm
     //Valid bits: k k
     //Dirty bits: k k
+}
+
+void optionA (){
+    int address, data;
+    char typeOfA;
+    
+    cout << "Enter R to read memory or W to write memory: ";
+    cin >> typeOfA;
+    if (typeOfA != 'A' && typeOfA != 'a'){
+        cout << "- Request type must be R or W\n";
+    }
+    else {
+        if (typeOfA == 'R'){
+            cout << "Enter integer data to be written: ";
+            cin >> data;
+            
+            cout << "Enter the address: ";
+            cin >> address;
+            if (address % 4 != 0){
+                cout << "Setting address to next lower multiple of 4\n";
+                address -= address % 4;
+            }
+            
+            WriteToCache(cache, <#int *memory#>, <#int address#>, <#int val#>)
+        }
+        if {
+            cout << "Enter the address: ";
+            cin >> address;
+            if (address % 4 != 0){
+                cout << "Setting address to next lower multiple of 4\n";
+                address -= address % 4;
+            }
+        }
+    }
 }
