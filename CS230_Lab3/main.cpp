@@ -5,6 +5,8 @@
 #include <limits>
 #include <sstream>
 #include <string>
+#include <cstdlib>
+#include <ctime>
 using namespace std;
 
 const int BitsInMem = 32768 , BitsInCache = 2048 , CacheLineSize = 16, LinesInCache = 2048 / (2 * 16);
@@ -22,6 +24,7 @@ int GetWay (CacheSlots cache[][2], int address);
 void WriteToCache (CacheSlots cache[][2], int address, int val);
 //-----------------------------------------------------------------
 int main () {
+    srand(time(0));
     int memory[BitsInMem] = {};
     CacheSlots cache [LinesInCache][2];
     
@@ -52,5 +55,18 @@ int GetWay (CacheSlots cache[][2], int address){
 };
 
 void WriteToCache (CacheSlots cache[][2], int address, int val){
+    int way = GetWay(cache, address), line = GetLine(address), tag = GetTag(address);
     
+    if (way == 3){
+        way = rand() % 2;
+        //write cache to mem
+    }
+    cache[line][way].val = val;
+    cache[line][way].tag = tag;
+    cache[line][way].dirtyBit = true;
+    cache[line][way].validBit = true;
 };
+
+void CacheToMem (CacheSlots cache[][2], int address){
+    int way = GetWay(cache, address), line = GetLine(address), tag = GetTag(address);
+}
