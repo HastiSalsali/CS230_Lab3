@@ -10,26 +10,47 @@ using namespace std;
 const int BitsInMem = 32768 , BitsInCache = 2048 , CacheLineSize = 16, LinesInCache = 2048 / (2 * 16);
 struct CacheSlots {
     int val = 0;
+    int tag;
     bool dirtyBit = 0;
     bool validBit = 0;
 };
 
 int GetMemVal (int address, int memory[]);
-void WriteCache (int address, int cache[][2]);
-int FindLine (int address);
-
+int GetLine (int address);
+int GetTag (int address);
+int GetWay (CacheSlots cache[][2], int address);
+void WriteToCache (CacheSlots cache[][2], int address, int val);
+//-----------------------------------------------------------------
 int main () {
     int memory[BitsInMem] = {};
     CacheSlots cache [LinesInCache][2];
     
 }
+//-----------------------------------------------------------------
 
 int GetMemVal (int address, int memory[]){
     return memory[address / 4];
 }
-void WriteCache (int address, int cache[][2]){
-    
+
+int GetLine (int address){
+    return ((address / 16) % 64);
 };
-int FindLine (int address){
-    return (add)
+int GetTag (int address){
+    return address / 1024;
+};
+
+int GetWay (CacheSlots cache[][2], int address){
+    int way = 3, line = GetLine(address), tag = GetTag(address);
+    
+    if (cache[line][0].tag == tag){
+        way = 0;
+    }
+    else if (cache[line][1].tag == tag){
+        way = 1;
+    }
+    return way;
+};
+
+void WriteToCache (CacheSlots cache[][2], int address, int val){
+    
 };
