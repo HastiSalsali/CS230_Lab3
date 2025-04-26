@@ -1,4 +1,4 @@
-// Salsali, Hasti        CS230 Section 15562 May 5
+// Salsali, Hasti        CS230 Section 11091 May 5
 // Third Laboratory Assignment – Cache Simulation
 #include <iomanip>
 #include <iostream>
@@ -24,6 +24,7 @@ int GetWay (CacheSlots cache[][2], int address);
 void WriteToCache (CacheSlots cache[][2], int memory[], int address, int val);
 void CacheToMem (CacheSlots cache[][2], int  memory[],  int line, int way);
 void MemToCache (CacheSlots cache[][2], int  memory[], int address, int way);
+void OptionA (CacheSlots cache[][2], int memory[]);
 //-----------------------------------------------------------------
 int main () {
     srand(time(0));
@@ -32,7 +33,7 @@ int main () {
     char typeOfAccess, menuOpt = 'A';
     bool continueMenu = true;
     
-    cout << "Salsali, Hasti        CS230 Section 15562 May 5 \nThird Laboratory Assignment – Cache Simulation\n";
+    cout << "Salsali, Hasti        CS230 Section 11091 May 5 \nThird Laboratory Assignment – Cache Simulation\n";
     
     while (continueMenu){
         cout << "Enter a command, A or B: ";
@@ -44,6 +45,7 @@ int main () {
         switch (menuOpt){
             case 'A':
             case 'a':
+                OptionA(cache, memory);
                 break;
             case 'B':
             case 'b':
@@ -89,6 +91,7 @@ void WriteToCache (CacheSlots cache[][2], int memory[], int address, int val){
         MemToCache(cache, memory, address, way);
     }
     cache[line][way].val[offset] = val;
+    cache[line][way].tag = tag;
     cache[line][way].dirtyBit = true;
 };
 
@@ -152,36 +155,29 @@ void print (CacheSlots cache[][2], int memory[], int address){
     //Dirty bits: k k
 }
 
-void optionA (){
+void OptionA (CacheSlots cache[][2], int memory[]){
     int address, data;
     char typeOfA;
-    
+    cout << "Enter the address: ";
+    cin >> address;
+    if (address % 4 != 0){
+        cout << "Setting address to next lower multiple of 4\n";
+        address -= address % 4;
+    }
+        
     cout << "Enter R to read memory or W to write memory: ";
     cin >> typeOfA;
-    if (typeOfA != 'A' && typeOfA != 'a'){
+    if (typeOfA != 'R' && typeOfA != 'r' && typeOfA != 'W' && typeOfA != 'w'){
         cout << "- Request type must be R or W\n";
     }
+    else if (typeOfA == 'W' || typeOfA == 'w'){
+        cout << "Enter integer data to be written: ";
+        cin >> data;
+        WriteToCache(cache, memory, address, data);
+        print(cache, memory, address);
+    }
     else {
-        if (typeOfA == 'R'){
-            cout << "Enter integer data to be written: ";
-            cin >> data;
-            
-            cout << "Enter the address: ";
-            cin >> address;
-            if (address % 4 != 0){
-                cout << "Setting address to next lower multiple of 4\n";
-                address -= address % 4;
-            }
-            
-            WriteToCache(cache, <#int *memory#>, <#int address#>, <#int val#>)
-        }
-        if {
-            cout << "Enter the address: ";
-            cin >> address;
-            if (address % 4 != 0){
-                cout << "Setting address to next lower multiple of 4\n";
-                address -= address % 4;
-            }
-        }
+        
+        ///////
     }
 }
