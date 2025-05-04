@@ -25,16 +25,36 @@ void WriteToCache (CacheSlots cache[][2], int memory[], int address, int val);
 void CacheToMem (CacheSlots cache[][2], int  memory[],  int line, int way);
 void MemToCache (CacheSlots cache[][2], int  memory[], int address, int way);
 void OptionA (CacheSlots cache[][2], int memory[]);
+void print (CacheSlots cache[][2], int memory[], int address);
 //-----------------------------------------------------------------
 int main () {
     srand(time(0));
     int memory[BitsInMem] = {};
     CacheSlots cache [LinesInCache][2];
-    char typeOfAccess, menuOpt = 'A';
+    char menuOpt = 'A';
     bool continueMenu = true;
     
     cout << "Salsali, Hasti        CS230 Section 11091 May 5 \nThird Laboratory Assignment – Cache Simulation\n";
     
+    print(cache, memory, 0);
+    WriteToCache(cache, memory, 0, 1);
+    print(cache, memory, 0);
+    WriteToCache(cache, memory, 4, 2);
+    print(cache, memory, 4);
+    WriteToCache(cache, memory, 4, 3);
+    print(cache, memory, 0);
+    print(cache, memory, 4);
+    WriteToCache(cache, memory, 15, 4);
+    print(cache, memory, 0);
+    print(cache, memory, 4);
+    print(cache, memory, 15);
+    
+
+
+
+
+
+    /*
     while (continueMenu){
         cout << "Enter a command, A or B: ";
         cin >> menuOpt;
@@ -55,7 +75,7 @@ int main () {
         }
         
     };
-    
+    */
     
 }
 //-----------------------------------------------------------------
@@ -115,7 +135,7 @@ void MemToCache (CacheSlots cache[][2], int  memory[], int address, int way){
     
     if (way == 3){
         way = rand() % 2;
-    }
+    } //why tf would you?
     if (cache[line][way].dirtyBit){
         CacheToMem(cache, memory, line, way);
     }
@@ -132,9 +152,10 @@ void MemToCache (CacheSlots cache[][2], int  memory[], int address, int way){
 
 void print (CacheSlots cache[][2], int memory[], int address){
     int line = GetLine(address);
+    int memIndex = address >> 2;
     
     cout << "Address: " << address << "\n"
-    << "Memory: " << memory[address] << "\n"
+    << "Memory: " << memory[memIndex] << "\n"
     << "Cache: " << right << "\n"
     << "\t" << setw(4) << cache[line][0].val[0]
     << setw(4) << cache[line][0].val[1]
