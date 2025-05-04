@@ -118,7 +118,7 @@ void WriteToCache (CacheSlots cache[][2], int memory[], int address, int val){
 void CacheToMem (CacheSlots cache[][2], int  memory[],  int line, int way){
     int address, memIndex;
     address = (cache[line][way].tag << 10) + (line << 4);
-    memIndex = address >> 2;
+    memIndex = address >> 1;
     
     if (cache[line][way].dirtyBit){
         memory[memIndex] = cache[line][way].val[0];
@@ -130,7 +130,7 @@ void CacheToMem (CacheSlots cache[][2], int  memory[],  int line, int way){
 }
 
 void MemToCache (CacheSlots cache[][2], int  memory[], int address, int way){
-    int line = GetLine(address), memIndex = address >> 2;
+    int line = GetLine(address), memIndex = address >> 1;
     
     
     if (way == 3){
@@ -152,7 +152,7 @@ void MemToCache (CacheSlots cache[][2], int  memory[], int address, int way){
 
 void print (CacheSlots cache[][2], int memory[], int address){
     int line = GetLine(address);
-    int memIndex = address >> 2;
+    int memIndex = address >> 1;
     
     cout << "Address: " << address << "\n"
     << "Memory: " << memory[memIndex] << "\n"
