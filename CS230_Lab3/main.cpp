@@ -9,7 +9,7 @@
 #include <ctime>
 using namespace std;
 //Switch before submit
-const int BitsInMem = 32768 , BitsInCache = 2048 , CacheLineSize = 16, LinesInCache = 2048 / (2 * 16), SizeOfInt = 16;
+const int BitsInMem = 32768 , BitsInCache = 2048 , CacheLineSize = 16, LinesInCache = 2048 / (2 * 16), SizeOfInt = 4 /*bytes*/ ;
 
 class Memory {
 private:
@@ -61,6 +61,7 @@ public:
     void CacheToMem (int line, int way);
     void MemToCache (int address, int way);
     void Write (int address, int value);
+    void Read (int address);
 };
 
 int GetMemIndex (int address);
@@ -118,9 +119,6 @@ int main () {
 //-----------------------------------------------------------------
 int Memory::GetVal (int address) const{
     return memory[GetMemIndex(address)];
-};
-int GetMemIndex (int address){
-    return (address << 1);
 };
 
 void Memory::SetVal (int address, int value){
@@ -233,13 +231,24 @@ void Cache::Write (int address, int value){
     cache[line][way].SetVal(address, value);
 };
 
+
+void Cache::Read (int address){
+    int way = GetWay(address), line = GetLine(address);
+    if (way == -1){
+        way = rand() % 2;
+        CacheToMem(line, way);
+        MemToCache(address, way);
+    }
+    cout << "->" << cache[line][way].GetVal(GetMemIndex(GetOffset(address))) << "\n";
+};
+
 //-----------------------------------------------------------------
 
 
 int GetOffset (int address) {return address % 16;};
 int GetLine (int address){return ((address / 16) % 64);};
 int GetTag (int address){return address / 1024;};
-
+int GetMemIndex (int address){return (address >> 2);};
 
 
 //int GetMemVal (int address, int memory[]){
