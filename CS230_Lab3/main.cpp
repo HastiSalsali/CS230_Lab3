@@ -53,7 +53,7 @@ private:
     CacheLine cache [LinesInCache][2];
     Memory mainMem;
 public:
-    Cache(){};
+    Cache();
     
     void Print(int row) const;
     int GetWay(int address) const;
@@ -84,7 +84,15 @@ int main () {
     cout << "Salsali, Hasti        CS230 Section 11091 May 5 \nThird Laboratory Assignment – Cache Simulation\n";
     
     myCache.Print(0);
-    
+    myCache.Write(4, 1);
+    myCache.Write(4, 2);
+    myCache.Write(12, 3);
+    myCache.Print(GetLine(12));
+    myCache.Write(1024, 11);
+    myCache.Write(1032, 22);
+    myCache.Print(GetLine(1024));
+    myCache.Write(3072, 111);
+    myCache.Print(GetTag(3072));
     
     
 
@@ -156,10 +164,16 @@ bool CacheLine::TagHit(int address) const{
 
 void CacheLine::SetVal (int address, int newVal){
     tag = GetTag(address);
-    val[GetOffset(address) << 1] = newVal;
+    val[GetMemIndex(GetOffset(address))] = newVal;
 };
 
 //-----------------------------------------------------------------
+Cache::Cache(){
+    for (int i=0; i < LinesInCache; i++){
+        cache[i][0].SetLine(i);
+        cache[i][1].SetLine(i);
+    }
+};
 void Cache::Print(int line) const{
     cout << "Cache: " << right << "\n"
     << "\t" << setw(4) << cache[line][0].GetVal(0)
@@ -186,39 +200,37 @@ int Cache::GetWay(int address) const{
 };
 void Cache::CacheToMem (int line, int way){
     int address;
-    CacheLine thisCachLine = cache[line][way];
-    address = CacheLine().GetAddress(0);
+    address = cache[line][way].GetAddress(0);
     
-    if (thisCachLine.dirtyBit){
-        mainMem.SetVal(address, thisCachLine.GetVal(0));
+    if (cache[line][way].dirtyBit){
+        mainMem.SetVal(address, cache[line][way].GetVal(0));
         address += SizeOfInt;
-        mainMem.SetVal(address, thisCachLine.GetVal(1));
+        mainMem.SetVal(address, cache[line][way].GetVal(1));
         address += SizeOfInt;
-        mainMem.SetVal(address, thisCachLine.GetVal(2));
+        mainMem.SetVal(address, cache[line][way].GetVal(2));
         address += SizeOfInt;
-        mainMem.SetVal(address, thisCachLine.GetVal(3));
+        mainMem.SetVal(address, cache[line][way].GetVal(3));
         address += SizeOfInt;
     }
-    thisCachLine.dirtyBit = false;
+    cache[line][way].dirtyBit = false;
 };
 
 void Cache::MemToCache (int address, int way){
     int line = GetLine(address);
-    CacheLine thisCacheLine = cache[line][way];
-    if (thisCacheLine.dirtyBit){
+    if (cache[line][way].dirtyBit){
         CacheToMem(line, way);
     }
-    thisCacheLine.SetVal(address, mainMem.GetVal(address));
+    cache[line][way].SetVal(address, mainMem.GetVal(address));
     address += SizeOfInt;
-    thisCacheLine.SetVal(address, mainMem.GetVal(address));
+    cache[line][way].SetVal(address, mainMem.GetVal(address));
     address += SizeOfInt;
-    thisCacheLine.SetVal(address, mainMem.GetVal(address));
+    cache[line][way].SetVal(address, mainMem.GetVal(address));
     address += SizeOfInt;
-    thisCacheLine.SetVal(address, mainMem.GetVal(address));
+    cache[line][way].SetVal(address, mainMem.GetVal(address));
     address += SizeOfInt;
     
-    thisCacheLine.dirtyBit = false;
-    thisCacheLine.validBit = true;
+    cache[line][way].dirtyBit = false;
+    cache[line][way].validBit = true;
 };
 
 void Cache::Write (int address, int value){
@@ -247,7 +259,7 @@ void Cache::Read (int address){
 
 int GetOffset (int address) {return address % 16;};
 int GetLine (int address){return ((address / 16) % 64);};
-int GetTag (int address){return address / 1024;};
+int GetTag (int address){return address >> 10;};
 int GetMemIndex (int address){return (address >> 2);};
 
 
