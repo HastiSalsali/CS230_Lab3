@@ -14,40 +14,10 @@
             filePath = "CS230_Lab3/main.cpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "83"
-            endingLineNumber = "83"
+            startingLineNumber = "78"
+            endingLineNumber = "78"
             landmarkName = "main()"
             landmarkType = "9">
-            <Locations>
-               <Location
-                  uuid = "C62542C1-EC33-4D7A-AD93-CBCAE6E8723E - e84fe7aa0615a6e4"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "main"
-                  moduleName = "CS230_Lab3"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/hastisalsali/Documents/CODE/CS230_Lab3/CS230_Lab3/main.cpp"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "83"
-                  endingLineNumber = "83">
-               </Location>
-               <Location
-                  uuid = "C62542C1-EC33-4D7A-AD93-CBCAE6E8723E - e84fe7aa0615a6c3"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "main"
-                  moduleName = "CS230_Lab3"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/hastisalsali/Documents/CODE/CS230_Lab3/CS230_Lab3/main.cpp"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "84"
-                  endingLineNumber = "84">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -60,26 +30,10 @@
             filePath = "CS230_Lab3/main.cpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "88"
-            endingLineNumber = "88"
+            startingLineNumber = "83"
+            endingLineNumber = "83"
             landmarkName = "main()"
             landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "571F9542-166D-4B7A-82D9-909ADD0214C1"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "CS230_Lab3/main.cpp"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "18"
-            endingLineNumber = "18"
-            landmarkName = "unknown"
-            landmarkType = "0">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -92,40 +46,10 @@
             filePath = "CS230_Lab3/main.cpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "85"
-            endingLineNumber = "85"
+            startingLineNumber = "80"
+            endingLineNumber = "80"
             landmarkName = "main()"
             landmarkType = "9">
-            <Locations>
-               <Location
-                  uuid = "E0985467-6D2C-4615-9BA4-A352210525D3 - e84fe7aa0615bac4"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "main"
-                  moduleName = "CS230_Lab3"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/hastisalsali/Documents/CODE/CS230_Lab3/CS230_Lab3/main.cpp"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "115"
-                  endingLineNumber = "115">
-               </Location>
-               <Location
-                  uuid = "E0985467-6D2C-4615-9BA4-A352210525D3 - e84fe7aa0615baa3"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "main"
-                  moduleName = "CS230_Lab3"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/hastisalsali/Documents/CODE/CS230_Lab3/CS230_Lab3/main.cpp"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "116"
-                  endingLineNumber = "116">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

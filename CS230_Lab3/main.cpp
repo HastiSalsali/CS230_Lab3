@@ -10,12 +10,6 @@
 using namespace std;
 //Switch before submit
 const int BitsInMem = 32768 , BitsInCache = 2048 , CacheLineSize = 16, LinesInCache = 2048 / (2 * 16);
-//struct CacheSlots {
-//    int val[4] = {};
-//    int tag = -1;
-//    bool dirtyBit = 0;
-//    bool validBit = 0;
-//};
 
 class Memory {
 private:
@@ -24,8 +18,9 @@ private:
 public:
     Memory (){};
     
-    int GetAdrInex (int address) const;
+    int GetInex (int address) const;
     int GetVal (int address) const;
+    void Print (int address) const;
     
     void SetVal (int address, int value);
     
@@ -61,10 +56,10 @@ private:
 public:
     Cache(){};
     
-    void Print(int row);
+    void Print(int row) const;
+    int GetWay(int address) const;
 };
 
-//int GetMemVal (int address, int memory[]); //
 int GetLine (int address);
 int GetTag (int address);
 int GetOffset (int address);
@@ -83,7 +78,7 @@ int main () {
     
     cout << "Salsali, Hasti        CS230 Section 11091 May 5 \nThird Laboratory Assignment – Cache Simulation\n";
     
-    
+    myCache.Print(0);
     
 
 
@@ -116,15 +111,20 @@ int main () {
 }
 //-----------------------------------------------------------------
 int Memory::GetVal (int address) const{
-    return memory[GetAdrInex(address)];
+    return memory[GetInex(address)];
 };
-int Memory::GetAdrInex (int address) const{
+int Memory::GetInex (int address) const{
     return (address << 1);
 };
 
 void Memory::SetVal (int address, int value){
-    memory[GetAdrInex(address)] = value;
+    memory[GetInex(address)] = value;
 };
+void Memory::Print (int address) const{
+    cout << "Address: " << address << "\n"
+    << "Memory: " << memory[GetInex(address)] << "\n";
+};
+
 Memory::~Memory(){
     //delete []memory; //Switch before submit
 };
@@ -159,7 +159,7 @@ void CacheLine::WriteVal (int address, int newVal){
 };
 
 //-----------------------------------------------------------------
-void Cache::Print(int line){
+void Cache::Print(int line) const{
     cout << "Cache: " << right << "\n"
     << "\t" << setw(4) << cache[line][0].GetVal(0)
         << setw(4) << cache[line][0].GetVal(1)
@@ -171,6 +171,17 @@ void Cache::Print(int line){
         << setw(4) << cache[line][1].GetVal(3) << "\n"
         << "Valid bits : " << ((cache[line][0].validBit) ? 1 : -1 )<< " " << ((cache[line][1].validBit) ? 1 : -1 ) << "\n"
         << "Dirty bits: " << cache[line][0].dirtyBit << " " << cache[line][1].dirtyBit << "\n";
+};
+
+int Cache::GetWay(int address) const{
+    int way = -1;
+    if (cache[GetLine(address)][0].TagHit(address)){
+            way = 0;
+        }
+        else if (cache[GetLine(address)][1].TagHit(address)){
+            way = 1;
+        }
+        return way;
 };
 //-----------------------------------------------------------------
 
