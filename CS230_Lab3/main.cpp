@@ -9,7 +9,7 @@
 #include <ctime>
 using namespace std;
 //Switch before submit
-const int BitsInMem = 32768 , BitsInCache = 2048 , CacheLineSize = 16, LinesInCache = 2048 / (2 * 16);
+const int BitsInMem = 32768 , BitsInCache = 2048 , CacheLineSize = 16, LinesInCache = 2048 / (2 * 16), SizeOfInt = 16;
 
 class Memory {
 private:
@@ -60,6 +60,7 @@ public:
     
     void CacheToMem (int line, int way);
     void MemToCache (int address, int way);
+    void Write (int address, int value);
 };
 
 int GetMemIndex (int address);
@@ -82,6 +83,8 @@ int main () {
     cout << "Salsali, Hasti        CS230 Section 11091 May 5 \nThird Laboratory Assignment – Cache Simulation\n";
     
     myCache.Print(0);
+    
+    
     
 
 
@@ -184,15 +187,19 @@ int Cache::GetWay(int address) const{
         return way;
 };
 void Cache::CacheToMem (int line, int way){
-    int address, memIndex;
+    int address;
     CacheLine thisCachLine = cache[line][way];
     address = CacheLine().GetAddress(0);
     
     if (thisCachLine.dirtyBit){
         mainMem.SetVal(address, thisCachLine.GetVal(0));
-        mainMem.SetVal(address + 16, thisCachLine.GetVal(1));
-        mainMem.SetVal(address + 16 + 16, thisCachLine.GetVal(2));
-        mainMem.SetVal(address + 16 + 16 + 16, thisCachLine.GetVal(3));
+        address += SizeOfInt;
+        mainMem.SetVal(address, thisCachLine.GetVal(1));
+        address += SizeOfInt;
+        mainMem.SetVal(address, thisCachLine.GetVal(2));
+        address += SizeOfInt;
+        mainMem.SetVal(address, thisCachLine.GetVal(3));
+        address += SizeOfInt;
     }
     thisCachLine.dirtyBit = false;
 };
@@ -204,18 +211,27 @@ void Cache::MemToCache (int address, int way){
         CacheToMem(line, way);
     }
     thisCacheLine.SetVal(address, mainMem.GetVal(address));
-    address += 16;
+    address += SizeOfInt;
     thisCacheLine.SetVal(address, mainMem.GetVal(address));
-    address += 16;
+    address += SizeOfInt;
     thisCacheLine.SetVal(address, mainMem.GetVal(address));
-    address += 16;
+    address += SizeOfInt;
     thisCacheLine.SetVal(address, mainMem.GetVal(address));
-    address += 16;
+    address += SizeOfInt;
     
     thisCacheLine.dirtyBit = false;
     thisCacheLine.validBit = true;
 };
 
+void Cache::Write (int address, int value){
+    int way = GetWay(address), line = GetLine(address);
+    if (way == -1){
+        way = rand() % 2;
+        CacheToMem(line, way);
+        MemToCache(address, way);
+    }
+    cache[line][way].SetVal(address, value);
+};
 
 //-----------------------------------------------------------------
 
