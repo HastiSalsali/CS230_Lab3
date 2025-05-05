@@ -42,7 +42,7 @@ public:
     
     void SetLine (int lineNum);
     void SetTag (int address);
-    void WriteVal (int address, int newVal);
+    void SetVal (int address, int newVal);
     
     int GetVal (int index) const {return val[index];}
     int GetAddress (int valIndex) const;
@@ -58,6 +58,8 @@ public:
     
     void Print(int row) const;
     int GetWay(int address) const;
+    
+    void CacheToMem (int line, int way);
 };
 
 int GetLine (int address);
@@ -150,7 +152,7 @@ bool CacheLine::TagHit(int address) const{
     return (tag == GetTag(address));
 };
 
-void CacheLine::WriteVal (int address, int newVal){
+void CacheLine::SetVal (int address, int newVal){
     if (tag != GetTag(address)){
         throw runtime_error("Writing val in the wrong line");
     }
@@ -183,6 +185,21 @@ int Cache::GetWay(int address) const{
         }
         return way;
 };
+void Cache::CacheToMem (int line, int way){
+    int address, memIndex;
+    CacheLine thisCachLine = cache[line][way];
+    address = CacheLine().GetAddress(0);
+    
+        if (cache[line][way].dirtyBit){
+            mainMem.SetVal(address, thisCachLine.GetVal(0));
+            mainMem.SetVal(++address, thisCachLine.GetVal(1));
+            mainMem.SetVal(++address, thisCachLine.GetVal(2));
+            mainMem.SetVal(++address, thisCachLine.GetVal(3));
+
+        }
+    thisCachLine.dirtyBit = false;
+};
+
 //-----------------------------------------------------------------
 
 
