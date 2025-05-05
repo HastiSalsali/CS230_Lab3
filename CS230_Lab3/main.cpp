@@ -92,7 +92,7 @@ int main () {
     myCache.Write(1032, 22);
     myCache.Print(GetLine(1024));
     myCache.Write(3072, 111);
-    myCache.Print(GetTag(3072));
+    myCache.Print(GetLine(3072));
     
     
 
@@ -155,7 +155,14 @@ void CacheLine::SetTag(int address){
 }
 
 int CacheLine::GetAddress (int valIndex) const{
-    return (valIndex + (line << 4) + (tag << 10));
+    if (!validBit){
+        throw runtime_error("Calculating address of an invalid cache line");
+    }
+    int address = 0;
+    address += valIndex;
+    address += (line << 4);
+    address += (tag << 10);
+    return (address);
 };
 
 bool CacheLine::TagHit(int address) const{
@@ -200,9 +207,9 @@ int Cache::GetWay(int address) const{
 };
 void Cache::CacheToMem (int line, int way){
     int address;
-    address = cache[line][way].GetAddress(0);
     
-    if (cache[line][way].dirtyBit){
+    if (cache[line][way].dirtyBit && cache[line][way].validBit){
+        address = cache[line][way].GetAddress(0);
         mainMem.SetVal(address, cache[line][way].GetVal(0));
         address += SizeOfInt;
         mainMem.SetVal(address, cache[line][way].GetVal(1));
@@ -217,7 +224,7 @@ void Cache::CacheToMem (int line, int way){
 
 void Cache::MemToCache (int address, int way){
     int line = GetLine(address);
-    if (cache[line][way].dirtyBit){
+    if (cache[line][way].dirtyBit && cache[line][way].validBit){
         CacheToMem(line, way);
     }
     cache[line][way].SetVal(address, mainMem.GetVal(address));
@@ -241,6 +248,7 @@ void Cache::Write (int address, int value){
         MemToCache(address, way);
     }
     cache[line][way].SetVal(address, value);
+    cache[line][way].dirtyBit = true;
 };
 
 
