@@ -174,6 +174,7 @@ void CacheLine::SetVal (int address, int newVal){
     val[GetMemIndex(GetOffset(address))] = newVal;
 };
 
+
 //-----------------------------------------------------------------
 Cache::Cache(){
     for (int i=0; i < LinesInCache; i++){
@@ -265,10 +266,36 @@ void Cache::Read (int address){
 //-----------------------------------------------------------------
 
 
-int GetOffset (int address) {return address % 16;};
+int GetOffset (int address) {return address % 16;}; //  4 rightmost bits for offset
 int GetLine (int address){return ((address / 16) % 64);};
 int GetTag (int address){return address >> 10;};
-int GetMemIndex (int address){return (address >> 2);};
+int GetMemIndex (int address){return (address >> 2);}; //get the index of the position of the memory location within the array. ex : address 8 -> index 2 in the array
+
+void OptionA (CacheSlots cache[][2], int memory[]){
+    int address, data;
+    char typeOfA;
+    cout << "Enter the address: ";
+    cin >> address;
+    if (address % 4 != 0){
+        cout << "Setting address to next lower multiple of 4\n";
+        address -= address % 4;
+    }
+
+    cout << "Enter R to read memory or W to write memory: ";
+    cin >> typeOfA;
+    if (typeOfA != 'R' && typeOfA != 'r' && typeOfA != 'W' && typeOfA != 'w'){
+        cout << "- Request type must be R or W\n";
+    }
+    else if (typeOfA == 'W' || typeOfA == 'w'){
+        cout << "Enter integer data to be written: ";
+        cin >> data;
+        WriteToCache(cache, memory, address, data);
+        print(cache, memory, address);
+    }
+    else {
+
+    }
+}
 
 
 //int GetMemVal (int address, int memory[]){
@@ -361,29 +388,4 @@ int GetMemIndex (int address){return (address >> 2);};
 //    //Dirty bits: k k
 //}
 //
-//void OptionA (CacheSlots cache[][2], int memory[]){
-//    int address, data;
-//    char typeOfA;
-//    cout << "Enter the address: ";
-//    cin >> address;
-//    if (address % 4 != 0){
-//        cout << "Setting address to next lower multiple of 4\n";
-//        address -= address % 4;
-//    }
-//        
-//    cout << "Enter R to read memory or W to write memory: ";
-//    cin >> typeOfA;
-//    if (typeOfA != 'R' && typeOfA != 'r' && typeOfA != 'W' && typeOfA != 'w'){
-//        cout << "- Request type must be R or W\n";
-//    }
-//    else if (typeOfA == 'W' || typeOfA == 'w'){
-//        cout << "Enter integer data to be written: ";
-//        cin >> data;
-//        WriteToCache(cache, memory, address, data);
-//        print(cache, memory, address);
-//    }
-//    else {
-//        
-//        ///////
-//    }
-//}
+//
