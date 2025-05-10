@@ -119,7 +119,9 @@ int main () {
             case 'b':
                 break;
             default:
-                cout << "- Command must be A, a, B, or b\n";
+                cout << "\n- Command must be A, a, B, or b\n";
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
         }
         
     };
