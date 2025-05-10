@@ -9,12 +9,12 @@
 #include <ctime>
 using namespace std;
 //Switch before submit
-const int BitsInMem = 32768 , BitsInCache = 2048 , CacheLineSize = 16, LinesInCache = 2048 / (2 * 16), SizeOfInt = 4 /*bytes*/ ;
+const int BytesInMem = 32768 , BitsInCache = 2048 , CacheLineSize = 16, LinesInCache = 2048 / (2 * 16), SizeOfInt = 4 /*bytes*/ ;
 
 class Memory {
 private:
-    //int *memory = new int[BitsInMem]; //Switch before submit
-    int memory[BitsInMem];
+    //int *memory = new int[BytesInMem]; //Switch before submit
+    int memory[BytesInMem];
 public:
     Memory (){};
     
@@ -68,11 +68,11 @@ int GetMemIndex (int address);
 int GetLine (int address);
 int GetTag (int address);
 int GetOffset (int address);
+void OptionA (Cache myCache);
 //int GetWay (CacheSlots cache[][2], int address);
 //void WriteToCache (CacheSlots cache[][2], int memory[], int address, int val);
 //void CacheToMem (CacheSlots cache[][2], int  memory[],  int line, int way);
 //void MemToCache (CacheSlots cache[][2], int  memory[], int address, int way);
-//void OptionA (CacheSlots cache[][2], int memory[]);
 //void print (CacheSlots cache[][2], int memory[], int address);
 //-----------------------------------------------------------------
 int main () {
@@ -80,6 +80,7 @@ int main () {
     char menuOpt = 'A';
     bool continueMenu = true;
     Cache myCache;
+    
     
     cout << "Salsali, Hasti        CS230 Section 11091 May 5 \nThird Laboratory Assignment – Cache Simulation\n";
     
@@ -100,7 +101,7 @@ int main () {
 
 
 
-    /*
+    
     while (continueMenu){
         cout << "Enter a command, A or B: ";
         cin >> menuOpt;
@@ -121,7 +122,7 @@ int main () {
         }
         
     };
-    */
+    
     
 }
 //-----------------------------------------------------------------
@@ -271,11 +272,16 @@ int GetLine (int address){return ((address / 16) % 64);};
 int GetTag (int address){return address >> 10;};
 int GetMemIndex (int address){return (address >> 2);}; //get the index of the position of the memory location within the array. ex : address 8 -> index 2 in the array
 
-void OptionA (CacheSlots cache[][2], int memory[]){
-    int address, data;
+void OptionA (Cache myCache){
+    int address, value;
     char typeOfA;
-    cout << "Enter the address: ";
+    cout << "Enter the address: \n";
     cin >> address;
+    while (address < 0 || address > (BytesInMem - 1)) {
+        cout << "Input address \"" << address << "\" invalid\n"
+        "Enter the address: \n";
+        cin >> address;
+    }
     if (address % 4 != 0){
         cout << "Setting address to next lower multiple of 4\n";
         address -= address % 4;
@@ -288,104 +294,13 @@ void OptionA (CacheSlots cache[][2], int memory[]){
     }
     else if (typeOfA == 'W' || typeOfA == 'w'){
         cout << "Enter integer data to be written: ";
-        cin >> data;
-        WriteToCache(cache, memory, address, data);
-        print(cache, memory, address);
+        cin >> value;
+        myCache.Write(address, value);
+        //could be removed because not in instrucitons FIXME:
+        myCache.Print(GetLine(address));
+        
     }
     else {
-
     }
 }
 
-
-//int GetMemVal (int address, int memory[]){
-//    return memory[address / 4];
-//}
-//
-
-//int GetWay (CacheSlots cache[][2], int address){
-//    int way = 3, line = GetLine(address), tag = GetTag(address);
-//    
-//    if (cache[line][0].tag == tag){
-//        way = 0;
-//    }
-//    else if (cache[line][1].tag == tag){
-//        way = 1;
-//    }
-//    return way;
-//};
-//
-//void WriteToCache (CacheSlots cache[][2], int memory[], int address, int val){
-//    int way = GetWay(cache, address), line = GetLine(address), tag = GetTag(address), offset = (address % 16) / 4;
-//    
-//    if (way == 3){
-//        way = rand() % 2;
-//        MemToCache(cache, memory, address, way);
-//    }
-//    cache[line][way].val[offset] = val;
-//    cache[line][way].tag = tag;
-//    cache[line][way].dirtyBit = true;
-//};
-//
-//void CacheToMem (CacheSlots cache[][2], int  memory[],  int line, int way){
-//    int address, memIndex;
-//    address = (cache[line][way].tag << 10) + (line << 4);
-//    memIndex = address >> 1;
-//    
-//    if (cache[line][way].dirtyBit){
-//        memory[memIndex] = cache[line][way].val[0];
-//        memory[memIndex + 1] = cache[line][way].val[1];
-//        memory[memIndex + 2] = cache[line][way].val[2];
-//        memory[memIndex + 3] = cache[line][way].val[3];
-//    }
-//    cache[line][way].dirtyBit = false;
-//}
-//
-//void MemToCache (CacheSlots cache[][2], int  memory[], int address, int way){
-//    int line = GetLine(address), memIndex = address >> 1;
-//    
-//    
-//    if (way == 3){
-//        way = rand() % 2;
-//    } //why tf would you?
-//    if (cache[line][way].dirtyBit){
-//        CacheToMem(cache, memory, line, way);
-//    }
-//    cache[line][way].val[0] = memory[memIndex];
-//    cache[line][way].val[1] = memory[memIndex + 1];
-//    cache[line][way].val[2] = memory[memIndex + 2];
-//    cache[line][way].val[3] = memory[memIndex + 3];
-//    
-//    cache[line][way].tag = GetTag(address);
-//    cache[line][way].dirtyBit = false;
-//    cache[line][way].validBit = true;
-//    
-//}
-//
-//void print (CacheSlots cache[][2], int memory[], int address){
-//    int line = GetLine(address);
-//    int memIndex = address >> 1;
-//    
-//    cout << "Address: " << address << "\n"
-//    << "Memory: " << memory[memIndex] << "\n"
-//    << "Cache: " << right << "\n"
-//    << "\t" << setw(4) << cache[line][0].val[0]
-//    << setw(4) << cache[line][0].val[1]
-//    << setw(4) << cache[line][0].val[2]
-//    << setw(4) << cache[line][0].val[3] << "\n"
-//    << "\t" << setw(4) << cache[line][1].val[0]
-//    << setw(4) << cache[line][1].val[1]
-//    << setw(4) << cache[line][1].val[2]
-//    << setw(4) << cache[line][1].val[3] << "\n"
-//    << "Valid bits : " << ((cache[line][0].validBit == 0) ? -1 : 0 )<< " " << ((cache[line][1].validBit == 0) ? -1 : 0 ) << "\n"
-//    << "Dirty bits: " << cache[line][0].dirtyBit<< " " << cache[line][1].dirtyBit << "\n";
-//    //Address: xxxxxxxx
-//    //memory:nnnnnnnn
-//    //cache:
-//    //  mmmm
-//    //  mmmm
-//    //Valid bits: k k
-//    //Dirty bits: k k
-//}
-//
-//
