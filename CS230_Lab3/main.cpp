@@ -13,7 +13,6 @@ const int BytesInMem = 32768 , BitsInCache = 2048 , CacheLineSize = 16, LinesInC
 
 class Memory {
 private:
-    //int *memory = new int[BytesInMem]; //Switch before submit
     int memory[BytesInMem];
 public:
     Memory (){};
@@ -57,11 +56,13 @@ public:
     
     void Print(int row) const;
     int GetWay(int address) const;
+    void PrintMem(int address) const;
     
     void CacheToMem (int line, int way);
     void MemToCache (int address, int way);
     void Write (int address, int value);
     void Read (int address);
+    int GetValMain (int address) { return mainMem.GetVal(address);}
 };
 
 int GetMemIndex (int address);
@@ -112,7 +113,7 @@ int main () {
         switch (menuOpt){
             case 'A':
             case 'a':
-                OptionA(cache, memory);
+                OptionA(myCache);
                 break;
             case 'B':
             case 'b':
@@ -264,6 +265,10 @@ void Cache::Read (int address){
     cout << "->" << cache[line][way].GetVal(GetMemIndex(GetOffset(address))) << "\n";
 };
 
+void Cache::PrintMem(int address) const{
+    mainMem.Print(address);
+};
+
 //-----------------------------------------------------------------
 
 
@@ -297,10 +302,15 @@ void OptionA (Cache myCache){
         cin >> value;
         myCache.Write(address, value);
         //could be removed because not in instrucitons FIXME:
+        myCache.PrintMem(address);
         myCache.Print(GetLine(address));
-        
     }
     else {
+        myCache.Read(address);
+        cout << "Value at address " << address << "-> " << myCache.GetValMain(address) << endl;
+        //FIXME
+        myCache.PrintMem(address);
+        myCache.Print(GetLine(address));
     }
 }
 
