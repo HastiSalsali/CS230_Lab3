@@ -96,7 +96,7 @@ int main () {
                 break;
             case 'B':
             case 'b':
-                OptionB(myCache);
+                OptionB(myCache, continueMenu);
                 break;
             default:
                 cout << "\n- Command must be A, a, B, or b\n";
@@ -117,8 +117,10 @@ void Memory::SetVal (int address, int value){
     memory[GetMemIndex(address)] = value;
 };
 void Memory::Print (int address) const{
-    cout << "Address: " << address << "\n"
-    << "Memory: " << memory[GetMemIndex(address)] << "\n";
+    cout << "Address: " << address << " "
+    << "Memory: " << memory[GetMemIndex(address)] << " ";
+//    cout << "Address: " << address << "\n"
+//    << "Memory: " << memory[GetMemIndex(address)] << "\n";
 };
 
 Memory::~Memory(){
@@ -167,17 +169,24 @@ Cache::Cache(){
     }
 };
 void Cache::Print(int line) const{
-    cout << "Cache: " << right << "\n"
-    << "\t" << setw(4) << cache[line][0].GetVal(0)
-        << setw(4) << cache[line][0].GetVal(1)
-        << setw(4) << cache[line][0].GetVal(2)
-        << setw(4) << cache[line][0].GetVal(3) << "\n"
-        << "\t" << setw(4) << cache[line][1].GetVal(0)
-        << setw(4) << cache[line][1].GetVal(1)
-        << setw(4) << cache[line][1].GetVal(2)
-        << setw(4) << cache[line][1].GetVal(3) << "\n"
-        << "Valid bits : " << ((cache[line][0].validBit) ? 1 : -1 )<< " " << ((cache[line][1].validBit) ? 1 : -1 ) << "\n"
-        << "Dirty bits: " << cache[line][0].dirtyBit << " " << cache[line][1].dirtyBit << "\n";
+    cout << "Cache: " << cache[line][0].GetVal(0)
+        << " " << cache[line][0].GetVal(1)
+        << " " << cache[line][0].GetVal(2)
+        << " " << cache[line][0].GetVal(3) << " " << cache[line][1].GetVal(0)
+        << " " << cache[line][1].GetVal(1)
+        << " " << cache[line][1].GetVal(2)
+        << " " << cache[line][1].GetVal(3) << " " << ((cache[line][0].validBit) ? 1 : -1 )<< " " << ((cache[line][1].validBit) ? 1 : -1 ) << " " << cache[line][0].dirtyBit << " " << cache[line][1].dirtyBit << "\n";
+//    cout << "Cache: " << right << "\n"
+//    << "\t" << setw(4) << cache[line][0].GetVal(0)
+//        << setw(4) << cache[line][0].GetVal(1)
+//        << setw(4) << cache[line][0].GetVal(2)
+//        << setw(4) << cache[line][0].GetVal(3) << "\n"
+//        << "\t" << setw(4) << cache[line][1].GetVal(0)
+//        << setw(4) << cache[line][1].GetVal(1)
+//        << setw(4) << cache[line][1].GetVal(2)
+//        << setw(4) << cache[line][1].GetVal(3) << "\n"
+//        << "Valid bits : " << ((cache[line][0].validBit) ? 1 : -1 )<< " " << ((cache[line][1].validBit) ? 1 : -1 ) << "\n"
+//        << "Dirty bits: " << cache[line][0].dirtyBit << " " << cache[line][1].dirtyBit << "\n";
 };
 
 int Cache::GetWay(int address) const{
@@ -300,16 +309,20 @@ void OptionB (Cache &myCache, bool &continueMenu){
     int address;
     cout << "Enter the address: \n";
     cin >> address;
-    while (address < 0 || address > (BytesInMem - 1)) {
-        cout << "Input address \"" << address << "\" invalid\n"
-        "Enter the address: \n";
-        cin >> address;
-    }
-    if (!continueMenu) {
+    if (address != -1) {
+        while (address < 0 || address > (BytesInMem - 1)) {
+            cout << "Input address \"" << address << "\" invalid\n"
+            "Enter the address: \n";
+            cin >> address;
+        }
+        
         if (address % 4 != 0){
             cout << "Setting address to next lower multiple of 4\n";
             address -= address % 4;
         }
         myCache.PrintMem(address);
-        myCache.Print(GetLine(address));}
+        myCache.Print(GetLine(address));
+    } else {
+        continueMenu = false;
+    }
 };
