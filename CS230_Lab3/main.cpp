@@ -271,7 +271,7 @@ int GetMemIndex (int address){return (address >> 2);}; //get the index of the po
 void OptionA (Cache &myCache){
     int address, value;
     char typeOfA;
-    cout << "Enter the address: \n";
+    cout << "\nEnter the address: \n";
     cin >> address;
     while (address < 0 || address > (BytesInMem - 1)) {
         cout << "Input address \"" << address << "\" invalid\n"
@@ -296,18 +296,21 @@ void OptionA (Cache &myCache){
 //        myCache.PrintMem(address);
 //        myCache.Print(GetLine(address));
     }
-    else {
+    else if (typeOfA == 'R' || typeOfA == 'r'){
         myCache.Read(address);
         cout << "Value at address " << address << "-> " << myCache.GetValMain(address) << endl;
 //        FIXME -> remove it:
 //        myCache.PrintMem(address);
 //        myCache.Print(GetLine(address));
     }
+    else {
+        cout << "Request type must be R or W\n";
+    }
 }
 
 void OptionB (Cache &myCache, bool &continueMenu){
     int address;
-    cout << "Enter the address: \n";
+    cout << "\nEnter the address: \n";
     cin >> address;
     if (address != -1) {
         while (address < 0 || address > (BytesInMem - 1)) {
