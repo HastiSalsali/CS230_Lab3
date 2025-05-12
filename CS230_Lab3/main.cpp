@@ -83,7 +83,7 @@ int main () {
     cout << "Salsali, Hasti        CS230 Section 11091 May 5 \nThird Laboratory Assignment – Cache Simulation\n";
     
     while (continueMenu){
-        cout << "Enter a command, A or B: ";
+        cout << "\n\nEnter a command, A or B: ";
         cin >> menuOpt;
         if (!cin){
             cin.clear();
@@ -271,7 +271,7 @@ int GetMemIndex (int address){return (address >> 2);}; //get the index of the po
 void OptionA (Cache &myCache){
     int address, value;
     char typeOfA;
-    cout << "\nEnter the address: \n";
+    cout << "Enter the address: \n";
     cin >> address;
     while (address < 0 || address > (BytesInMem - 1)) {
         cout << "Input address \"" << address << "\" invalid\n"
@@ -310,7 +310,7 @@ void OptionA (Cache &myCache){
 
 void OptionB (Cache &myCache, bool &continueMenu){
     int address;
-    cout << "\nEnter the address: \n";
+    cout << "Enter the address: \n";
     cin >> address;
     if (address != -1) {
         while (address < 0 || address > (BytesInMem - 1)) {
@@ -329,3 +329,107 @@ void OptionB (Cache &myCache, bool &continueMenu){
         continueMenu = false;
     }
 };
+// sample output:
+//Salsali, Hasti        CS230 Section 11091 May 5
+//Third Laboratory Assignment – Cache Simulation
+//
+//
+//Enter a command, A or B: A 0 W 22222222
+//A 8 W 1234
+//A 32 W 1233
+//A 16 W 888Enter the address:
+//Enter R to read memory or W to write memory:
+//Enter integer data to be written:
+//
+//
+//Enter a command, A or B: Enter the address:
+//Enter R to read memory or W to write memory:
+//Enter integer data to be written:
+//
+//
+//Enter a command, A or B: Enter the address:
+//Enter R to read memory or W to write memory:
+//Enter integer data to be written:
+//
+//
+//Enter a command, A or B: b 0
+//Enter the address:
+//Enter R to read memory or W to write memory:
+//Enter integer data to be written:
+//
+//
+//Enter a command, A or B: Enter the address:
+//Address: 0 Memory: 0 Cache: 22222222 0 1234 0 0 0 0 0 1 -1 1 0
+//
+//
+//Enter a command, A or B: A 4 W 33333333
+//Enter the address:
+//Enter R to read memory or W to write memory:
+//Enter integer data to be written:
+//
+//
+//Enter a command, A or B: B 8
+//Enter the address:
+//Address: 8 Memory: 0 Cache: 22222222 33333333 1234 0 0 0 0 0 1 -1 1 0
+//
+//
+//Enter a command, A or B: A 1028 W 3231
+//Enter the address:
+//Enter R to read memory or W to write memory:
+//Enter integer data to be written:
+//
+//
+//Enter a command, A or B: A 16388 W 5657
+//Enter the address:
+//Enter R to read memory or W to write memory:
+//Enter integer data to be written:
+//
+//
+//Enter a command, A or B: B 0
+//Enter the address:
+//Address: 0 Memory: 0 Cache: 22222222 33333333 1234 0 0 5657 0 0 1 1 1 1
+//
+//
+//Enter a command, A or B: b 4
+//Enter the address:
+//Address: 4 Memory: 0 Cache: 22222222 33333333 1234 0 0 5657 0 0 1 1 1 1
+//
+//
+//Enter a command, A or B: b 8
+//Enter the address:
+//Address: 8 Memory: 0 Cache: 22222222 33333333 1234 0 0 5657 0 0 1 1 1 1
+//
+//
+//Enter a command, A or B: b 12
+//Enter the address:
+//Address: 12 Memory: 0 Cache: 22222222 33333333 1234 0 0 5657 0 0 1 1 1 1
+//
+//
+//Enter a command, A or B: B 16
+//Enter the address:
+//Address: 16 Memory: 0 Cache: 888 0 0 0 0 0 0 0 1 -1 1 0
+//
+//
+//Enter a command, A or B: B 1024
+//Enter the address:
+//Address: 1024 Memory: 0 Cache: 22222222 33333333 1234 0 0 5657 0 0 1 1 1 1
+//
+//
+//Enter a command, A or B: B 1028
+//Enter the address:
+//Address: 1028 Memory: 3231 Cache: 22222222 33333333 1234 0 0 5657 0 0 1 1 1 1
+//
+//
+//Enter a command, A or B: B 16384
+//Enter the address:
+//Address: 16384 Memory: 0 Cache: 22222222 33333333 1234 0 0 5657 0 0 1 1 1 1
+//
+//
+//Enter a command, A or B: B 16388
+//Enter the address:
+//Address: 16388 Memory: 0 Cache: 22222222 33333333 1234 0 0 5657 0 0 1 1 1 1
+//
+//
+//Enter a command, A or B:
+//Message from debugger: killed
+//Program ended with exit code: 9
