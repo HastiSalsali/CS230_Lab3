@@ -69,12 +69,9 @@ int GetMemIndex (int address);
 int GetLine (int address);
 int GetTag (int address);
 int GetOffset (int address);
-void OptionA (Cache myCache);
-//int GetWay (CacheSlots cache[][2], int address);
-//void WriteToCache (CacheSlots cache[][2], int memory[], int address, int val);
-//void CacheToMem (CacheSlots cache[][2], int  memory[],  int line, int way);
-//void MemToCache (CacheSlots cache[][2], int  memory[], int address, int way);
-//void print (CacheSlots cache[][2], int memory[], int address);
+void OptionA (Cache &myCache);
+void OptionB (Cache &myCache, bool &continueMenu);
+
 //-----------------------------------------------------------------
 int main () {
     srand(time(0));
@@ -84,24 +81,6 @@ int main () {
     
     
     cout << "Salsali, Hasti        CS230 Section 11091 May 5 \nThird Laboratory Assignment – Cache Simulation\n";
-    
-    myCache.Print(0);
-    myCache.Write(4, 1);
-    myCache.Write(4, 2);
-    myCache.Write(12, 3);
-    myCache.Print(GetLine(12));
-    myCache.Write(1024, 11);
-    myCache.Write(1032, 22);
-    myCache.Print(GetLine(1024));
-    myCache.Write(3072, 111);
-    myCache.Print(GetLine(3072));
-    
-    
-
-
-
-
-
     
     while (continueMenu){
         cout << "Enter a command, A or B: ";
@@ -117,6 +96,7 @@ int main () {
                 break;
             case 'B':
             case 'b':
+                OptionB(myCache);
                 break;
             default:
                 cout << "\n- Command must be A, a, B, or b\n";
@@ -279,7 +259,7 @@ int GetLine (int address){return ((address / 16) % 64);};
 int GetTag (int address){return address >> 10;};
 int GetMemIndex (int address){return (address >> 2);}; //get the index of the position of the memory location within the array. ex : address 8 -> index 2 in the array
 
-void OptionA (Cache myCache){
+void OptionA (Cache &myCache){
     int address, value;
     char typeOfA;
     cout << "Enter the address: \n";
@@ -294,25 +274,42 @@ void OptionA (Cache myCache){
         address -= address % 4;
     }
 
-    cout << "Enter R to read memory or W to write memory: ";
+    cout << "Enter R to read memory or W to write memory: \n";
     cin >> typeOfA;
     if (typeOfA != 'R' && typeOfA != 'r' && typeOfA != 'W' && typeOfA != 'w'){
         cout << "- Request type must be R or W\n";
     }
     else if (typeOfA == 'W' || typeOfA == 'w'){
-        cout << "Enter integer data to be written: ";
+        cout << "Enter integer data to be written: \n";
         cin >> value;
         myCache.Write(address, value);
-        //could be removed because not in instrucitons FIXME:
-        myCache.PrintMem(address);
-        myCache.Print(GetLine(address));
+//        could be removed because not in instrucitons FIXME:
+//        myCache.PrintMem(address);
+//        myCache.Print(GetLine(address));
     }
     else {
         myCache.Read(address);
         cout << "Value at address " << address << "-> " << myCache.GetValMain(address) << endl;
-        //FIXME
-        myCache.PrintMem(address);
-        myCache.Print(GetLine(address));
+//        FIXME -> remove it:
+//        myCache.PrintMem(address);
+//        myCache.Print(GetLine(address));
     }
 }
 
+void OptionB (Cache &myCache, bool &continueMenu){
+    int address;
+    cout << "Enter the address: \n";
+    cin >> address;
+    while (address < 0 || address > (BytesInMem - 1)) {
+        cout << "Input address \"" << address << "\" invalid\n"
+        "Enter the address: \n";
+        cin >> address;
+    }
+    if (!continueMenu) {
+        if (address % 4 != 0){
+            cout << "Setting address to next lower multiple of 4\n";
+            address -= address % 4;
+        }
+        myCache.PrintMem(address);
+        myCache.Print(GetLine(address));}
+};
