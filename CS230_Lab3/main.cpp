@@ -83,7 +83,7 @@ int main () {
     cout << "Salsali, Hasti        CS230 Section 11091 May 5 \nThird Laboratory Assignment – Cache Simulation\n";
     
     while (continueMenu){
-        cout << "\n\nEnter a command, A or B: ";
+        cout << "\n\nEnter a command, A or B: \n";
         cin >> menuOpt;
         if (!cin){
             cin.clear();
