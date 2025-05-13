@@ -80,10 +80,13 @@ int main () {
     Cache myCache;
     
     
-    cout << "Salsali, Hasti        CS230 Section 11091 May 5 \nThird Laboratory Assignment – Cache Simulation\n";
+    cout << "Salsali, Hasti        CS230 Section 11091 May 5 \nThird Laboratory Assignment – Cache Simulation\n"
+    "--- OptionB output format:\n"
+    "--- Address: xxxxxxxx memory:nnnnnnnn cache:mmmm mmmm v v d d\n"
+    "--- v: valid bit, d: dirty bit"<< endl;
     
     while (continueMenu){
-        cout << "\n\nEnter a command, A or B: \n";
+        cout << "\n\nEnter a command, A or B: " << endl;
         cin >> menuOpt;
         if (!cin){
             cin.clear();
@@ -99,9 +102,9 @@ int main () {
                 OptionB(myCache, continueMenu);
                 break;
             default:
-                cout << "\n- Command must be A, a, B, or b\n";
-                cin.clear();
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << "\n- Command must be A, a, B, or b" << endl;
+                cin.clear(10);
+                break;
         }
         
     };
@@ -118,8 +121,12 @@ void Memory::SetVal (int address, int value){
     memory[GetMemIndex(address)] = value;
 };
 void Memory::Print (int address) const{
+    int lowerBlockAdd = (address / 16) * 16;
     cout << "Address: " << address << " "
-    << "Memory: " << memory[GetMemIndex(address)] << " ";
+    << "Memory: " << memory[GetMemIndex(lowerBlockAdd)] << " "
+    << memory[GetMemIndex(lowerBlockAdd+ 4)] << " "
+    << memory[GetMemIndex(lowerBlockAdd+ 8)] << " "
+    << memory[GetMemIndex(lowerBlockAdd+ 12)] << " ";
 //    cout << "Address: " << address << "\n"
 //    << "Memory: " << memory[GetMemIndex(address)] << "\n";
 };
@@ -176,18 +183,7 @@ void Cache::Print(int line) const{
         << " " << cache[line][0].GetVal(3) << " " << cache[line][1].GetVal(0)
         << " " << cache[line][1].GetVal(1)
         << " " << cache[line][1].GetVal(2)
-        << " " << cache[line][1].GetVal(3) << " " << ((cache[line][0].validBit) ? 1 : -1 )<< " " << ((cache[line][1].validBit) ? 1 : -1 ) << " " << cache[line][0].dirtyBit << " " << cache[line][1].dirtyBit << "\n";
-//    cout << "Cache: " << right << "\n"
-//    << "\t" << setw(4) << cache[line][0].GetVal(0)
-//        << setw(4) << cache[line][0].GetVal(1)
-//        << setw(4) << cache[line][0].GetVal(2)
-//        << setw(4) << cache[line][0].GetVal(3) << "\n"
-//        << "\t" << setw(4) << cache[line][1].GetVal(0)
-//        << setw(4) << cache[line][1].GetVal(1)
-//        << setw(4) << cache[line][1].GetVal(2)
-//        << setw(4) << cache[line][1].GetVal(3) << "\n"
-//        << "Valid bits : " << ((cache[line][0].validBit) ? 1 : -1 )<< " " << ((cache[line][1].validBit) ? 1 : -1 ) << "\n"
-//        << "Dirty bits: " << cache[line][0].dirtyBit << " " << cache[line][1].dirtyBit << "\n";
+        << " " << cache[line][1].GetVal(3) << " " << ((cache[line][0].validBit) ? 1 : -1 )<< " " << ((cache[line][1].validBit) ? 1 : -1 ) << " " << cache[line][0].dirtyBit << " " << cache[line][1].dirtyBit << endl;
 };
 
 int Cache::GetWay(int address) const{
@@ -254,7 +250,7 @@ void Cache::Read (int address){
         CacheToMem(line, way);
         MemToCache(address, way);
     }
-    cout << "->" << cache[line][way].GetVal(GetMemIndex(GetOffset(address))) << "\n";
+    cout << "Value at address " << address << "-> " << cache[line][way].GetVal(GetMemIndex(GetOffset(address))) << endl;
 };
 
 void Cache::PrintMem(int address) const{
@@ -272,25 +268,27 @@ int GetMemIndex (int address){return (address >> 2);}; //get the index of the po
 void OptionA (Cache &myCache){
     int address, value;
     char typeOfA;
-    cout << "Enter the address: \n";
+    cout << "Enter the address: " << endl;
     cin >> address;
     while (address < 0 || address > (BytesInMem - 1)) {
         cout << "Input address \"" << address << "\" invalid\n"
-        "Enter the address: \n";
+        "Enter the address: " << endl;
         cin >> address;
     }
     if (address % 4 != 0){
-        cout << "Setting address to next lower multiple of 4\n";
+        cout << "Setting address to next lower multiple of 4" << endl;
         address -= address % 4;
     }
 
-    cout << "Enter R to read memory or W to write memory: \n";
+    cout << "Enter R to read memory or W to write memory: " << endl;
     cin >> typeOfA;
     if (typeOfA != 'R' && typeOfA != 'r' && typeOfA != 'W' && typeOfA != 'w'){
-        cout << "- Request type must be R or W\n";
+        cout << "- Request type must be R or W" << endl;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
     }
     else if (typeOfA == 'W' || typeOfA == 'w'){
-        cout << "Enter integer data to be written: \n";
+        cout << "Enter integer data to be written: " << endl;
         cin >> value;
         myCache.Write(address, value);
 //        could be removed because not in instrucitons FIXME:
@@ -299,29 +297,29 @@ void OptionA (Cache &myCache){
     }
     else if (typeOfA == 'R' || typeOfA == 'r'){
         myCache.Read(address);
-        cout << "Value at address " << address << "-> " << myCache.GetValMain(address) << endl;
+        
 //        FIXME -> remove it:
 //        myCache.PrintMem(address);
 //        myCache.Print(GetLine(address));
     }
     else {
-        cout << "Request type must be R or W\n";
+        cout << "Request type must be R or W" << endl;
     }
 }
 
 void OptionB (Cache &myCache, bool &continueMenu){
     int address;
-    cout << "Enter the address: \n";
+    cout << "Enter the address: " << endl;
     cin >> address;
     if (address != -1) {
         while (address < 0 || address > (BytesInMem - 1)) {
             cout << "Input address \"" << address << "\" invalid\n"
-            "Enter the address: \n";
+            "Enter the address: " << endl;
             cin >> address;
         }
         
         if (address % 4 != 0){
-            cout << "Setting address to next lower multiple of 4\n";
+            cout << "Setting address to next lower multiple of 4" << endl;
             address -= address % 4;
         }
         myCache.PrintMem(address);
@@ -330,107 +328,141 @@ void OptionB (Cache &myCache, bool &continueMenu){
         continueMenu = false;
     }
 };
-// sample output:
-//Salsali, Hasti        CS230 Section 11091 May 5
+// Salsali, Hasti        CS230 Section 11091 May 5
 //Third Laboratory Assignment – Cache Simulation
-//
-//
-//Enter a command, A or B: A 0 W 22222222
-//A 8 W 1234
-//A 32 W 1233
-//A 16 W 888Enter the address:
-//Enter R to read memory or W to write memory:
-//Enter integer data to be written:
-//
-//
-//Enter a command, A or B: Enter the address:
-//Enter R to read memory or W to write memory:
-//Enter integer data to be written:
-//
-//
-//Enter a command, A or B: Enter the address:
-//Enter R to read memory or W to write memory:
-//Enter integer data to be written:
-//
-//
-//Enter a command, A or B: b 0
-//Enter the address:
-//Enter R to read memory or W to write memory:
-//Enter integer data to be written:
-//
-//
-//Enter a command, A or B: Enter the address:
-//Address: 0 Memory: 0 Cache: 22222222 0 1234 0 0 0 0 0 1 -1 1 0
-//
-//
-//Enter a command, A or B: A 4 W 33333333
-//Enter the address:
-//Enter R to read memory or W to write memory:
-//Enter integer data to be written:
-//
-//
-//Enter a command, A or B: B 8
-//Enter the address:
-//Address: 8 Memory: 0 Cache: 22222222 33333333 1234 0 0 0 0 0 1 -1 1 0
-//
-//
-//Enter a command, A or B: A 1028 W 3231
-//Enter the address:
-//Enter R to read memory or W to write memory:
-//Enter integer data to be written:
-//
-//
-//Enter a command, A or B: A 16388 W 5657
-//Enter the address:
-//Enter R to read memory or W to write memory:
-//Enter integer data to be written:
-//
-//
-//Enter a command, A or B: B 0
-//Enter the address:
-//Address: 0 Memory: 0 Cache: 22222222 33333333 1234 0 0 5657 0 0 1 1 1 1
-//
-//
-//Enter a command, A or B: b 4
-//Enter the address:
-//Address: 4 Memory: 0 Cache: 22222222 33333333 1234 0 0 5657 0 0 1 1 1 1
-//
-//
-//Enter a command, A or B: b 8
-//Enter the address:
-//Address: 8 Memory: 0 Cache: 22222222 33333333 1234 0 0 5657 0 0 1 1 1 1
-//
-//
-//Enter a command, A or B: b 12
-//Enter the address:
-//Address: 12 Memory: 0 Cache: 22222222 33333333 1234 0 0 5657 0 0 1 1 1 1
-//
-//
-//Enter a command, A or B: B 16
-//Enter the address:
-//Address: 16 Memory: 0 Cache: 888 0 0 0 0 0 0 0 1 -1 1 0
-//
-//
-//Enter a command, A or B: B 1024
-//Enter the address:
-//Address: 1024 Memory: 0 Cache: 22222222 33333333 1234 0 0 5657 0 0 1 1 1 1
-//
-//
-//Enter a command, A or B: B 1028
-//Enter the address:
-//Address: 1028 Memory: 3231 Cache: 22222222 33333333 1234 0 0 5657 0 0 1 1 1 1
-//
-//
-//Enter a command, A or B: B 16384
-//Enter the address:
-//Address: 16384 Memory: 0 Cache: 22222222 33333333 1234 0 0 5657 0 0 1 1 1 1
-//
-//
-//Enter a command, A or B: B 16388
-//Enter the address:
-//Address: 16388 Memory: 0 Cache: 22222222 33333333 1234 0 0 5657 0 0 1 1 1 1
+//--- OptionB output format:
+//--- Address: xxxxxxxx memory:nnnnnnnn cache:mmmm mmmm v v d d
+//--- v: valid bit, d: dirty bit
 //
 //
 //Enter a command, A or B:
-//Message from debugger: killed
-//Program ended with exit code: 9
+//A 0 W 22222222
+//Enter the address:
+//Enter R to read memory or W to write memory:
+//Enter integer data to be written:
+//
+//
+//Enter a command, A or B:
+//A 8 W 1234
+//Enter the address:
+//Enter R to read memory or W to write memory:
+//Enter integer data to be written:
+//
+//
+//Enter a command, A or B:
+//A 32 W 1233
+//Enter the address:
+//Enter R to read memory or W to write memory:
+//Enter integer data to be written:
+//
+//
+//Enter a command, A or B:
+//A 16 W 888
+//Enter the address:
+//Enter R to read memory or W to write memory:
+//Enter integer data to be written:
+//
+//
+//Enter a command, A or B:
+//B 0
+//Enter the address:
+//Address: 0 Memory: 0 0 0 0 Cache: 0 0 0 0 22222222 0 1234 0 -1 1 0 1
+//
+//
+//Enter a command, A or B:
+//A 4 W 33333333
+//Enter the address:
+//Enter R to read memory or W to write memory:
+//Enter integer data to be written:
+//
+//
+//Enter a command, A or B:
+//B 8
+//Enter the address:
+//Address: 8 Memory: 0 0 0 0 Cache: 0 0 0 0 22222222 33333333 1234 0 -1 1 0 1
+//
+//
+//Enter a command, A or B:
+//A 1028 W 3231
+//Enter the address:
+//Enter R to read memory or W to write memory:
+//Enter integer data to be written:
+//
+//
+//Enter a command, A or B:
+//A 16388 W 5657
+//Enter the address:
+//Enter R to read memory or W to write memory:
+//Enter integer data to be written:
+//
+//
+//Enter a command, A or B:
+//b 0
+//Enter the address:
+//Address: 0 Memory: 22222222 33333333 1234 0 Cache: 0 5657 0 0 0 3231 0 0 1 1 1 1
+//
+//
+//Enter a command, A or B:
+//B 4
+//Enter the address:
+//Address: 4 Memory: 22222222 33333333 1234 0 Cache: 0 5657 0 0 0 3231 0 0 1 1 1 1
+//
+//
+//Enter a command, A or B:
+//B 8
+//Enter the address:
+//Address: 8 Memory: 22222222 33333333 1234 0 Cache: 0 5657 0 0 0 3231 0 0 1 1 1 1
+//
+//
+//Enter a command, A or B:
+//B 12
+//Enter the address:
+//Address: 12 Memory: 22222222 33333333 1234 0 Cache: 0 5657 0 0 0 3231 0 0 1 1 1 1
+//
+//
+//Enter a command, A or B:
+//B 16
+//Enter the address:
+//Address: 16 Memory: 0 0 0 0 Cache: 0 0 0 0 888 0 0 0 -1 1 0 1
+//
+//
+//Enter a command, A or B:
+//B 1024
+//Enter the address:
+//Address: 1024 Memory: 0 0 0 0 Cache: 0 5657 0 0 0 3231 0 0 1 1 1 1
+//
+//
+//Enter a command, A or B:
+//B 1028
+//Enter the address:
+//Address: 1028 Memory: 0 0 0 0 Cache: 0 5657 0 0 0 3231 0 0 1 1 1 1
+//
+//
+//Enter a command, A or B:
+//B 16384
+//Enter the address:
+//Address: 16384 Memory: 0 0 0 0 Cache: 0 5657 0 0 0 3231 0 0 1 1 1 1
+//
+//
+//Enter a command, A or B:
+//B 16388
+//Enter the address:
+//Address: 16388 Memory: 0 0 0 0 Cache: 0 5657 0 0 0 3231 0 0 1 1 1 1
+//
+//
+//Enter a command, A or B:
+//b
+//Enter the address: -
+//1
+//
+//End of cache program!Program ended with exit code: 0
+
+
+
+/*
+ a 0 w 111
+ a 8 w 888
+ a 1024 w 2222
+ a 16388 w 444
+ 
+ */
